@@ -1,0 +1,6 @@
+.venv/
+.idea/
+.vs/
+.vscode/
+logs/
+.env
