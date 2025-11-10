@@ -7,7 +7,7 @@ from api.db import users
 users_router = APIRouter()
 
 
-@users_router.get('/users/')
+@users_router.get('/users')
 async def get_users() -> dict:
     return users
 

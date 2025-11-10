@@ -8,3 +8,4 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 VERSION = env( 'VERSION' )
+DB_NAME = env( 'DB_NAME', default = 'database.db' )
