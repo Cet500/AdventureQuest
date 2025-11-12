@@ -1,27 +1,50 @@
 from typing import Annotated
-from fastapi import Path, APIRouter
 
-from api.db import users
+from fastapi import Path, APIRouter, HTTPException
+from sqlmodel import select
+from api.models import User, UserBase
+from api.db import SessionDep
 
 
 users_router = APIRouter()
 
 
-@users_router.get('/users')
-async def get_users() -> dict:
-    return users
-
-@users_router.post('/user/{login}/{hp}/{damage}/{armor}')
-async def post_user(
-        login : Annotated[ str, Path() ] ,
-        hp    : Annotated[ int, Path( gt=0, le=100 ) ],
-        damage: Annotated[ int, Path( gt=0, le=100 ) ],
-        armor : Annotated[ int, Path( gt=0, le=100 ) ],
+@users_router.post('/users')
+async def create_user(
+		user_base: UserBase,
+		session: SessionDep
 ) -> dict:
-    users[login] = {
-        'hp': hp,
-        'damage': damage,
-        'armor': armor
-    }
+	user = User(
+		tg_id = user_base.tg_id,
+		name  = user_base.name,
+		lang  = user_base.lang,
+		email = user_base.email,
+		phone = user_base.phone
+	)
 
-    return users[login]
+	session.add( user )
+	session.commit()
+	session.refresh( user )
+
+	return { 'id': user.id }
+
+
+@users_router.get( '/users',  response_model=list[User] )
+async def get_users(
+		session: SessionDep
+) -> dict:
+	users = session.exec( select(User) ).all()
+	return users
+
+
+@users_router.get( '/users/{user_id}' )
+async def get_user_by_id(
+	user_id: Annotated[ int, Path() ],
+	session: SessionDep
+) -> User:
+	user = session.get( User, user_id )
+
+	if not user:
+		raise HTTPException( 404, 'User not found' )
+
+	return user
