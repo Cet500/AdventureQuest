@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import Path, APIRouter, HTTPException
 from sqlmodel import select
-from api.models import Player, PlayerBase
+from api.models.players import Player, PlayerBase
 from api.db import SessionDep
 
 
