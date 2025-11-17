@@ -4,3 +4,4 @@
 .vscode/
 logs/
 .env
+database.db
