@@ -15,17 +15,19 @@ async def create_player(
 		session: SessionDep
 ) -> dict:
 	player = Player(
-		nickname  = player_base.nickname,
-		hp        = player_base.hp,
-		max_hp    = player_base.max_hp,
-		mp        = player_base.mp,
-		max_mp    = player_base.max_mp,
-		damage    = player_base.damage,
-		armor     = player_base.armor,
-		max_armor = player_base.max_armor,
-		xp        = player_base.xp,
-		level     = player_base.level,
-		money     = player_base.money,
+		nickname   = player_base.nickname,
+		hp         = player_base.hp,
+		max_hp     = player_base.max_hp,
+		mp         = player_base.mp,
+		max_mp     = player_base.max_mp,
+		damage     = player_base.damage,
+		armor      = player_base.armor,
+		max_armor  = player_base.max_armor,
+		weight     = player_base.weight,
+		weight_max = player_base.weight_max,
+		xp         = player_base.xp,
+		level      = player_base.level,
+		money      = player_base.money,
 	)
 
 	session.add( player )

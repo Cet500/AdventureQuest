@@ -24,6 +24,7 @@ async def create_item(
 		attributes     = item_base.attributes,
 	)
 
+
 	session.add( item )
 	session.commit()
 	session.refresh( item )

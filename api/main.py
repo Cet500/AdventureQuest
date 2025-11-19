@@ -4,6 +4,7 @@ from api.urls.users import users_router
 from api.urls.players import players_router
 from api.urls.enemies import enemies_router
 from api.urls.items import items_router
+from api.urls.inventory import inventory_router
 from api.config import VERSION
 
 from api.db import engine
@@ -21,6 +22,7 @@ app.include_router( users_router )
 app.include_router( players_router )
 app.include_router( items_router )
 app.include_router( enemies_router )
+app.include_router( inventory_router )
 
 
 @app.get('/')
