@@ -5,6 +5,7 @@ from api.urls.players import players_router
 from api.urls.enemies import enemies_router
 from api.urls.items import items_router
 from api.urls.locations import location_router
+from api.urls.effects import effects_router
 from api.config import VERSION
 
 from api.db import engine
@@ -22,6 +23,7 @@ app.include_router( users_router )
 app.include_router( players_router )
 app.include_router( items_router )
 app.include_router( enemies_router )
+app.include_router( effects_router )
 app.include_router( location_router )
 
 
