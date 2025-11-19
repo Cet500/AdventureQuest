@@ -1,4 +1,7 @@
-from sqlmodel import SQLModel, Field
+from typing import Optional
+
+from sqlmodel import SQLModel, Field, Relationship
+from api.models.game_classes import GameClass
 
 
 class PlayerBase( SQLModel ):
@@ -14,9 +17,15 @@ class PlayerBase( SQLModel ):
     level: int     = Field( default = 0 )
     money: int     = Field( default = -100 )
 
+    game_class_id: Optional[int] = Field(
+        default=None,
+        foreign_key="gameclass.id"
+    )
+
 
 class Player( PlayerBase, table = True ):
     id: int | None = Field( default = None, primary_key = True )
+    game_class: Optional["GameClass"] = Relationship(back_populates="players")
 
 
 class PlayerID( SQLModel ):
