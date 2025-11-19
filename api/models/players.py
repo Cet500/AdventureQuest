@@ -14,8 +14,10 @@ class PlayerBase( SQLModel ):
     level: int     = Field( default = 0 )
     money: int     = Field( default = -100 )
 
+
 class Player( PlayerBase, table = True ):
     id: int | None = Field( default = None, primary_key = True )
+
 
 class PlayerID( SQLModel ):
     id: int

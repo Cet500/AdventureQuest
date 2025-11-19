@@ -3,7 +3,6 @@ from typing import Dict, Any
 from sqlmodel import SQLModel, Field
 from enum import Enum
 from sqlalchemy import Column, String
-from sqlalchemy.dialects.postgresql import JSON
 
 
 class Rarities(str, Enum):
@@ -32,8 +31,10 @@ class ItemBase( SQLModel ):
     type: Types
     attributes: Dict[str, Any] = Field(default_factory=dict, sa_column=Column(String, nullable=False))
 
+
 class Item( ItemBase, table = True ):
     id: int | None = Field( default = None, primary_key = True )
+
 
 class ItemID( SQLModel ):
     id: int

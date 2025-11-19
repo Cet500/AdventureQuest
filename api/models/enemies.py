@@ -12,5 +12,6 @@ class EnemyBase( SQLModel ):
     level: int       = Field( default = 0 )
     money: int       = Field( default = 10 )
 
+
 class Enemy( EnemyBase, table = True ):
     id: int | None = Field( default = None, primary_key = True )

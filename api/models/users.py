@@ -8,5 +8,6 @@ class UserBase( SQLModel ):
     email: str | None
     phone: str | None
 
+
 class User( UserBase, table = True ):
     id: int | None = Field( default = None, primary_key = True )
