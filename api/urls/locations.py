@@ -3,6 +3,7 @@ from typing import Annotated, List
 from fastapi import Path, APIRouter, HTTPException, UploadFile, Form, Request
 from sqlmodel import select
 
+from api.models import GameClass
 from api.models.locations import Location, LocationID, LocationURL
 from api.db import SessionDep
 from api.utils.images import validate_and_save_image
@@ -92,3 +93,20 @@ async def get_location_full_url_by_id(
 	full_url = request.url_for( "static", path = location.image )
 
 	return LocationURL( url = str( full_url ) )
+
+
+@location_router.delete(
+    "/{location_id}",
+    status_code=204
+)
+async def delete_location(
+        location_id: Annotated[int, Path()],
+        session: SessionDep
+) -> None:
+    location = session.get(Location, location_id)
+
+    if not location:
+        raise HTTPException( 404, "Location not found")
+
+    session.delete(location)
+    session.commit()
