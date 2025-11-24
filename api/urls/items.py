@@ -1,46 +1,56 @@
-from typing import Annotated
+from typing import Annotated, List
 
 from fastapi import Path, APIRouter, HTTPException
 from sqlmodel import select
-from api.models.items import Item, ItemBase
+from api.models import Item, ItemBase
+from api.models.items import ItemID
 from api.db import SessionDep
+import logging
 
 
-items_router = APIRouter()
+logger = logging.getLogger(__name__)
+items_router = APIRouter( prefix = '/items', tags = [ 'items' ] )
 
 
-@items_router.post( '/items' )
+@items_router.post(
+	'',
+	status_code = 201
+)
 async def create_item(
 		item_base: ItemBase,
 		session: SessionDep
-) -> dict:
-	item = Item(
-		name           = item_base.name,
-        description    = item_base.description,
-		weight         = item_base.weight,
-		cost           = item_base.cost,
-		rarity         = item_base.rarity,
-		type           = item_base.type,
-		attributes     = item_base.attributes,
-	)
+) -> ItemID:
+	item = session.get( Item )
 
+	if not item:
+		raise HTTPException( 404, "Item not found" )
 
-	session.add( item )
+	item = Item.model_validate( item_base.model_dump() )
+
+	session.add(item)
 	session.commit()
 	session.refresh( item )
 
-	return { 'id': item.id }
+	return ItemID(id=item.id)
 
 
-@items_router.get( '/items',  response_model=list[Item] )
+@items_router.get(
+	'',
+	status_code = 200,
+	response_model=List[Item]
+)
 async def get_items(
 		session: SessionDep
-) -> dict:
+) -> List[Item]:
 	items = session.exec( select(Item) ).all()
 	return items
 
 
-@items_router.get( '/items/{item_id}' )
+@items_router.get(
+	'/{items_id}',
+	status_code = 200,
+	response_model = Item
+)
 async def get_item_by_id(
 	item_id: Annotated[ int, Path() ],
 	session: SessionDep
@@ -51,3 +61,61 @@ async def get_item_by_id(
 		raise HTTPException( 404, 'Item not found' )
 
 	return item
+
+
+@items_router.get(
+	"/item/{item_id}",
+	status_code = 200,
+	response_model=Item
+)
+
+
+@items_router.get(
+	"/tg/{tg_id}",
+	status_code = 200,
+	response_model=Item
+)
+
+
+@items_router.put(
+	"/{item_id}",
+	status_code = 200,
+	response_model=Item
+)
+async def replace_item(
+	item_id: Annotated[ int, Path() ],
+	item_base: ItemBase,
+	session: SessionDep
+) -> Item:
+	item = session.get(item_id)
+
+	if not item:
+		raise HTTPException(404, "Item not found")
+
+	new_data = item_base.model_dump()
+
+	for key, value in new_data.items():
+		setattr(item, key, value)
+
+	session.add(item)
+	session.commit()
+	session.refresh(item)
+
+	return item
+
+
+@items_router.delete(
+	"/{item_id}",
+	status_code=204
+)
+async def delete_item(
+	item_id: Annotated[ int, Path() ],
+	session: SessionDep
+) -> None:
+	item = session.get(Item, item_id)
+
+	if not item:
+		raise HTTPException(404, "Item not found")
+
+	session.delete(item)
+	session.commit()

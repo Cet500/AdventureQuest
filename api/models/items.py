@@ -23,13 +23,13 @@ class Types(str, Enum):
 
 
 class ItemBase( SQLModel ):
-    name: str
-    description: str
-    weight: int  = Field( default = 0 )
-    cost: int    = Field( default = 0 )
-    rarity: Rarities
-    type: Types
-    attributes: Dict[str, Any] = Field(default_factory=dict, sa_column=Column(String, nullable=False))
+    name        : str
+    description : str
+    weight      : int  = Field( default = 0 )
+    cost        : int    = Field( default = 0 )
+    rarity      : Rarities
+    type        : Types
+    attributes  : Dict[str, Any] = Field(default_factory=dict, sa_column=Column(String, nullable=False))
 
 
 class Item( ItemBase, table = True ):

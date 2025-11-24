@@ -28,9 +28,8 @@ app.include_router( users_router )
 app.include_router( players_router )
 app.include_router( game_classes_router )
 app.include_router( location_router )
-
+app.include_router( items_router )
 # app.include_router( enemies_router )
-# app.include_router( items_router )
 # app.include_router( effects_router )
 # app.include_router( inventory_router )
 
