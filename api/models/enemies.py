@@ -20,4 +20,6 @@ class EnemyBase( SQLModel ):
 
 
 class Enemy( EnemyBase, table = True ):
+    __tablename__ = 'enemy'
+
     id: int | None = Field( default = None, primary_key = True )
