@@ -1,18 +1,28 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import Column, String
-from api.models.players import Player
-from api.models.skills import Skill, SkillClassLink
+from sqlalchemy import Column
+from api.types.json import JsonType
 
 
 class GameClassBase( SQLModel ):
-    name: str
-    description: str
-    delta_attributes: Dict[str, Any] = Field(default_factory=dict, sa_column=Column(String, nullable=False))
+    symbol      : str = Field( max_length = 1 )
+    name        : str = Field( max_length = 20 )
+    description : str = Field( max_length = 200 )
+
+    delta_attributes : Dict[str, Any] = Field(
+        default_factory = dict,
+        sa_column = Column( JsonType, nullable = False )
+    )
 
 
 class GameClass( GameClassBase, table = True ):
+    __tablename__ = "game_class"
+
     id: int | None = Field(default=None, primary_key=True)
-    players: list["Player"] = Relationship(back_populates="game_class")
-    skills:  list["Skill"] = Relationship(back_populates="classes", link_model=SkillClassLink)
+
+    players: List["Player"] = Relationship(back_populates="game_class" )
+
+
+class GameClassID( SQLModel ):
+    id: int

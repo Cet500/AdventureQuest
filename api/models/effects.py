@@ -1,8 +1,8 @@
 import json
+from enum import Enum
 from typing import Dict, Any
 
 from sqlmodel import SQLModel, Field
-from enum import Enum
 from sqlalchemy import Column, String
 
 
@@ -31,6 +31,8 @@ class EffectBase( SQLModel ):
 
 
 class Effect( EffectBase, table = True ):
+    __tablename__ = 'effect'
+
     id: int | None = Field( default = None, primary_key  = True)
 
 
