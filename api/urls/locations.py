@@ -3,11 +3,11 @@ from typing import Annotated, List
 from fastapi import Path, APIRouter, HTTPException, UploadFile, Form, Request
 from sqlmodel import select
 
-from api.models import GameClass
-from api.models.locations import Location, LocationID, LocationURL
+from api.models import Location
+from api.models.locations import LocationID, LocationURL
 from api.db import SessionDep
 from api.utils.images import validate_and_save_image
-
+from ..config import LOCATION_FOLDER
 
 location_router = APIRouter( prefix = "/locations", tags = [ "locations" ] )
 
@@ -24,7 +24,7 @@ async def create_location(
 		image: UploadFile | None = None
 ) -> LocationID:
 	if image:
-		rel_path, w, h, size, mime = validate_and_save_image( image )
+		rel_path, w, h, size, mime = validate_and_save_image( image, LOCATION_FOLDER )
 	else:
 		raise HTTPException( 400, "Image is required" )
 
@@ -96,17 +96,17 @@ async def get_location_full_url_by_id(
 
 
 @location_router.delete(
-    "/{location_id}",
-    status_code=204
+	"/{location_id}",
+	status_code=204
 )
 async def delete_location(
-        location_id: Annotated[int, Path()],
-        session: SessionDep
+		location_id: Annotated[int, Path()],
+		session: SessionDep
 ) -> None:
-    location = session.get(Location, location_id)
+	location = session.get(Location, location_id)
 
-    if not location:
-        raise HTTPException( 404, "Location not found")
+	if not location:
+		raise HTTPException( 404, "Location not found")
 
-    session.delete(location)
-    session.commit()
+	session.delete(location)
+	session.commit()

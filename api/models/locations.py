@@ -7,7 +7,7 @@ class LocationBase( SQLModel ):
 
     image : str | None = Field(
         default = None,
-        description = "Путь к изображению относительно media/locations/"
+        description = "Путь к изображению относительно media/"
     )
 
     image_width  : int | None = None
@@ -22,6 +22,7 @@ class Location( LocationBase, table = True ):
 
 class LocationID( SQLModel ):
     id : int
+
 
 class LocationURL( SQLModel ):
     url : str

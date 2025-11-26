@@ -12,3 +12,4 @@ DB_NAME = env( 'DB_NAME', default = 'database.db' )
 
 MEDIA_FOLDER    = env( 'MEDIA_FOLDER',    default = 'media/' )
 LOCATION_FOLDER = env( 'LOCATION_FOLDER', default = 'locations/' )
+ITEMS_FOLDER    = env( 'ITEMS_FOLDER',    default = 'items/' )

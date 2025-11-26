@@ -3,19 +3,19 @@ from typing import Tuple
 from fastapi import UploadFile, HTTPException
 from PIL import Image
 from io import BytesIO
-from ..config import MEDIA_FOLDER, LOCATION_FOLDER
+from ..config import MEDIA_FOLDER
 
 
 def ensure_media_folder():
     os.makedirs( MEDIA_FOLDER, exist_ok = True )
-    os.makedirs( MEDIA_FOLDER + LOCATION_FOLDER, exist_ok = True )
 
-
-def validate_and_save_image(upload: UploadFile) -> Tuple[str, int, int, int, str]:
+def validate_and_save_image( upload: UploadFile, folder: str  ) -> Tuple[str, int, int, int, str]:
     """
-    Проверяет изображение, сохраняет в media/locations/, возвращает:
+    Проверяет изображение, сохраняет в media/{folder}/, возвращает:
     (relative_path, width, height, size_bytes, mime)
     """
+
+    os.makedirs( MEDIA_FOLDER + folder, exist_ok = True )
 
     content = upload.file.read()
 
@@ -36,20 +36,20 @@ def validate_and_save_image(upload: UploadFile) -> Tuple[str, int, int, int, str
     ensure_media_folder()
 
     filename = upload.filename
-    save_path = os.path.join( MEDIA_FOLDER, LOCATION_FOLDER, filename )
+    save_path = os.path.join( MEDIA_FOLDER, folder, filename )
 
     # Избегаем перезаписи
     base, ext = os.path.splitext(filename)
     i = 1
     while os.path.exists(save_path):
         filename = f"{base}_{i}{ext}"
-        save_path = os.path.join( MEDIA_FOLDER, LOCATION_FOLDER, filename )
+        save_path = os.path.join( MEDIA_FOLDER, folder, filename )
         i += 1
 
     with open(save_path, "wb") as f:
         f.write(content)
 
-    rel_path = f"{LOCATION_FOLDER}{filename}"
+    rel_path = f"{folder}{filename}"
 
     size_bytes = len(content)
 

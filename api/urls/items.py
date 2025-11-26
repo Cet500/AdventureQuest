@@ -20,18 +20,13 @@ async def create_item(
 		item_base: ItemBase,
 		session: SessionDep
 ) -> ItemID:
-	item = session.get( Item )
-
-	if not item:
-		raise HTTPException( 404, "Item not found" )
-
 	item = Item.model_validate( item_base.model_dump() )
 
-	session.add(item)
+	session.add( item )
 	session.commit()
 	session.refresh( item )
 
-	return ItemID(id=item.id)
+	return ItemID( id = item.id )
 
 
 @items_router.get(
@@ -61,20 +56,6 @@ async def get_item_by_id(
 		raise HTTPException( 404, 'Item not found' )
 
 	return item
-
-
-@items_router.get(
-	"/item/{item_id}",
-	status_code = 200,
-	response_model=Item
-)
-
-
-@items_router.get(
-	"/tg/{tg_id}",
-	status_code = 200,
-	response_model=Item
-)
 
 
 @items_router.put(
