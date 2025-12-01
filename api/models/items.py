@@ -7,7 +7,7 @@ from api.types.json import JsonType
 
 
 class Rarities(str, Enum):
-    common    = 'Обычный"'
+    common    = 'Обычный'
     uncommon  = 'Необычный'
     rare      = 'Редкий'
     epic      = 'Эпический'
@@ -21,12 +21,13 @@ class Types(str, Enum):
     shield     = 'Щит'
     armor      = 'Броня'
     consumable = 'Расходуемое'
+    accessory   = 'Аксессуар'
 
 
 class ItemBase( SQLModel ):
     name        : str = Field( max_length = 40 )
     description : str = Field( max_length = 250 )
-    symbol      : str = Field( max_length = 1 )
+    symbol      : str = Field( max_length = 5 )
 
     weight      : int      = 0
     cost        : int      = 0

@@ -12,7 +12,7 @@ class PlayerBase( SQLModel ):
         unique = True,
         index = True
     )
-    game_class_id : int = Field(
+    game_class_id : int | None = Field(
         default = None,
         foreign_key = "game_class.id"
     )

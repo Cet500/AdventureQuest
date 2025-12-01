@@ -1,0 +1,16 @@
+{
+	"item": [
+		{
+			"name": "Меч",
+			"description": "Обычный железный меч по типу тех, что носят рыцари",
+			"symbol": "м",
+			"weight": 10,
+			"cost": 5,
+			"rarity": "common",
+			"type": "weapon",
+			"attributes": "{\"additionalProp1\": {}}",
+			"id": 1,
+			"image": null
+		}
+	]
+}

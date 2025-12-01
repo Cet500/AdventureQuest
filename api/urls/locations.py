@@ -1,10 +1,11 @@
 from typing import Annotated, List
 
-from fastapi import Path, APIRouter, HTTPException, UploadFile, Form, Request
+from fastapi import Path, APIRouter, HTTPException, UploadFile, Form, Request, Body
 from sqlmodel import select
 
-from api.models import Location
-from api.models.locations import LocationID, LocationURL
+from api.models import Location, LocationTransition
+from api.models.locations import (LocationID, LocationURL,
+                                  LocationTransitionRead, LocationTransitionCreate)
 from api.db import SessionDep
 from api.utils.images import validate_and_save_image
 from ..config import LOCATION_FOLDER
@@ -109,4 +110,66 @@ async def delete_location(
 		raise HTTPException( 404, "Location not found")
 
 	session.delete(location)
+	session.commit()
+
+
+@location_router.post(
+	"/transitions",
+	status_code=201,
+	response_model=LocationTransitionRead,
+)
+async def create_location_transition(
+	transition_data: LocationTransitionCreate = Body(...),
+	session: SessionDep = None,
+) -> LocationTransition:
+	from_location = session.get(Location, transition_data.from_location_id)
+	to_location = session.get(Location, transition_data.to_location_id)
+
+	if not from_location or not to_location:
+		raise HTTPException(404, "One or both locations not found")
+
+	transition = LocationTransition(
+		from_location_id=transition_data.from_location_id,
+		to_location_id=transition_data.to_location_id,
+		title=transition_data.title,
+		direction=transition_data.direction,
+		condition=transition_data.condition,
+	)
+
+	session.add(transition)
+	session.commit()
+	session.refresh(transition)
+
+	return transition
+
+
+@location_router.get(
+	"/{location_id}/transitions",
+	status_code=200,
+	response_model=List[LocationTransitionRead],
+)
+async def get_location_transitions(
+	location_id: int,
+	session: SessionDep,
+) -> List[LocationTransitionRead]:
+	statement = select(LocationTransition).where(LocationTransition.from_location_id == location_id)
+	results = session.exec(statement).all()
+	return results
+
+
+@location_router.delete(
+	"/transitions",
+	status_code=204,
+)
+async def delete_location_transition(
+	from_location_id: int,
+	to_location_id: int,
+	session: SessionDep,
+):
+	transition = session.get(LocationTransition, (from_location_id, to_location_id))
+
+	if not transition:
+		raise HTTPException(404, "Transition not found")
+
+	session.delete(transition)
 	session.commit()

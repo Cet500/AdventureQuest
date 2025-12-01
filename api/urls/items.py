@@ -42,7 +42,7 @@ async def get_items(
 
 
 @items_router.get(
-	'/{items_id}',
+	'/{item_id}',
 	status_code = 200,
 	response_model = Item
 )
